@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: BSD-3-Clause
+# Copyright 2019, Intel Corporation
+
+#
+# src/test/pmem_is_pmem_posix/TEST5 -- unit test for pmem_is_pmem
+#
+
+. ../unittest/unittest.sh
+
+require_test_type medium
+require_fs_type none
+
+setup
+
+# test adding/removing ranges to/from map tracking list
+
+expect_normal_exit ./pmem_is_pmem_posix$EXESUFFIX\
+	a 0x000000030000 0x20000 DEV_DAX\
+	s 0x000000040000 0x20000\
+	r 0x000000040000 0x20000\
+
+check
+
+pass

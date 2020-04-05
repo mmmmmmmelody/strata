@@ -1,0 +1,42 @@
+SPDK_ROOT_DIR := $(abspath $(CURDIR)/../../../lib/spdk/)
+MLFS_DIR := $(abspath $(CURDIR)/../../)
+include $(SPDK_ROOT_DIR)/mk/spdk.common.mk
+
+C_SRCS := common.c sync.c async.c
+OBJS=$(C_SRCS:.c=.o)
+MLFS_DEP_OBJS = $(MLFS_DIR)/../build/global/util.o
+
+OBJS += $(MLFS_DEP_OBJS)
+
+CFLAGS += -I. -I $(MLFS_DIR) $(ENV_CFLAGS) -I $(SPDK_ROOT_DIR)/include
+#DEBUG := -O0 -g
+DEBUG := -O3
+
+SPDK_LIBS += $(SPDK_ROOT_DIR)/build/lib/libspdk_nvme.a \
+	     $(SPDK_ROOT_DIR)/build/lib/libspdk_log.a \
+		$(SPDK_ROOT_DIR)/dpdk/lib/librte_eal.a\
+		$(SPDK_ROOT_DIR)/build/lib/libspdk_sock.a\
+		$(SPDK_ROOT_DIR)/dpdk/lib/librte_pci.a\
+		$(SPDK_ROOT_DIR)/build/lib/libspdk_util.a\
+
+LIBS += $(SPDK_LIBS) $(ENV_LINKER_ARGS) 
+
+all: libspdk.so 
+
+verify:
+	gcc -o verify verify.c -L. -lspdk 
+
+libspdk.so: $(OBJS) $(ENV_LIBS)
+	@echo "build shared library"
+	gcc -shared -fPIC $(DEBUG) -o libspdk.so -Wl,--whole-archive $(SPDK_LIBS) \
+	-Wl,--no-whole-archive $^ -ldl -lrt -lm -luuid
+
+clean :
+	$(CLEAN_C)
+	@rm -f libspdk.so
+
+%.o: %.c
+	$(CC) -o $@ $(DEBUG) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(SPDK_LIBS) $(SYS_LIBS)  \
+	-fPIC -I $(SPDK_ROOT_DIR)/include -c $< -DMLFS_INFO
+
+include $(SPDK_ROOT_DIR)/mk/spdk.deps.mk
