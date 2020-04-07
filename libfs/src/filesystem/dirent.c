@@ -617,10 +617,10 @@ struct inode* namei(char *path)
 
 	inode = dlookup_find(g_root_dev, path); 
 
-	if (inode && (inode->flags & I_DELETING)){ 
+	/*if (inode && (inode->flags & I_DELETING)){ 
 		mlfs_info("debug jwq inode deleting, %s\n", "123");
                 return NULL;
-        }
+        }*/
 
 	if (!inode) {
 		inode = namex(path, 0, name);
