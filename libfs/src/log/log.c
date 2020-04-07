@@ -1083,7 +1083,7 @@ void handle_digest_response(char *ack_cmd)
 		if (!(inode->flags & I_DELETING)) {
 			if (inode->itype == T_FILE) 
 				sync_inode_ext_tree(g_root_dev, inode);
-			else if(inode->itype == T_DIR)
+			/*else if(inode->itype == T_DIR)
 				;
 			else{
                                char debug_inode[128];
@@ -1091,7 +1091,7 @@ void handle_digest_response(char *ack_cmd)
                                sprintf(debug_inode, "%u, %u, %ld", inode->itype, inode->dev, inode->inum);
                                mlfs_info("debug jwq :%s\n", debug_inode);
 				panic("unsupported inode type\n");
-                        }
+                        }*/
 		}
 	}
 
