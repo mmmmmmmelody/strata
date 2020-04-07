@@ -412,7 +412,8 @@ int mlfs_posix_unlink(const char *filename)
 	inode = dir_lookup(dir_inode, name, NULL);
 
 	if (!inode)  
-		return -ENOENT;
+	//	return -ENOENT;
+                return 0;        
 
 	start_log_tx();
 	

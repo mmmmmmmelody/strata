@@ -216,6 +216,7 @@ struct inode* dir_lookup(struct inode *dir_inode, char *name, offset_t *poff)
 			mlfs_assert(ip);
 
 			if (!(ip->flags & I_VALID)) {
+                                return NULL;
 				struct dinode dip;
 
 				read_ondisk_inode(dir_inode->dev, inum, &dip);
