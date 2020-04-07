@@ -382,6 +382,7 @@ int dir_remove_entry(struct inode *dir_inode, char *name, uint32_t inum)
 	uint32_t n;
 	uint64_t tsc_begin, tsc_end;
 
+        ilock(dir_inode);
 	if (enable_perf_stats)
 		tsc_begin = asm_rdtscp();
 
@@ -439,7 +440,7 @@ dirent_found:
 	de_cache_del(dir_inode, name);
 
 	mlfs_debug("remove file %s from directory\n", name);
-
+        iunlock(dir_inode);
 	/* unoptimized code.
 
 	   if (add_to_log(dir_inode, dirent_array, 0, dir_inode->size) 
