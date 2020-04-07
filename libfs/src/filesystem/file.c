@@ -251,14 +251,14 @@ int mlfs_file_write(struct file *f, uint8_t *buf, size_t n)
 
 			size_aligned = n - size_prepended - size_appended; 
 		}
-
+                ilock(f->ip);
 		// add preprended portion to log
 		if (size_prepended > 0) {
-			ilock(f->ip);
+			//ilock(f->ip);
 
 			r = add_to_log(f->ip, buf, f->off, size_prepended);
 
-			iunlock(f->ip);
+			//iunlock(f->ip);
 
 			mlfs_assert(r > 0);
 
@@ -277,7 +277,7 @@ int mlfs_file_write(struct file *f, uint8_t *buf, size_t n)
 				io_size = max_io_size;
 
 			/* add_to_log updates inode block pointers */
-			ilock(f->ip);
+			//ilock(f->ip);
 
 			/* do not copy user buffer to page cache */
 			
@@ -285,7 +285,7 @@ int mlfs_file_write(struct file *f, uint8_t *buf, size_t n)
 			if ((r = add_to_log(f->ip, buf + i, f->off, io_size)) > 0)
 				f->off += r;
 
-			iunlock(f->ip);
+			//iunlock(f->ip);
 
 			if(r < 0)
 				break;
@@ -298,11 +298,11 @@ int mlfs_file_write(struct file *f, uint8_t *buf, size_t n)
 
 		// add appended portion to log
 		if (size_appended > 0) {
-			ilock(f->ip);
+			//ilock(f->ip);
 
 			r = add_to_log(f->ip, buf + i, f->off, size_appended);
 
-			iunlock(f->ip);
+			//iunlock(f->ip);
 
 			mlfs_assert(r > 0);
 
@@ -310,7 +310,7 @@ int mlfs_file_write(struct file *f, uint8_t *buf, size_t n)
 
 			i += r;
 		}
-
+                iunlock(f->ip);
 		/* Optimization: writing inode to log does not require
 		 * for write append or update. Kernfs can see the length in inode
 		 * by looking up offset in a logheader and also mtime in a logheader */
