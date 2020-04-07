@@ -1549,8 +1549,8 @@ int add_to_log(struct inode *ip, uint8_t *data, offset_t off, uint32_t size)
 
 		mlfs_assert(loghdr_meta->nr_iovec <= 9);
 		add_to_loghdr(L_TYPE_FILE, ip, off, size, NULL, 0);
-	} else
-		panic("unknown inode type\n");
+	}// else
+	//	panic("unknown inode type\n");
 
 	if (size > 0 && (off + size) > ip->size) 
 		ip->size = off + size;
