@@ -182,12 +182,12 @@ static inline struct inode *icache_alloc_add(uint8_t dev, uint32_t inum)
 	inode->de_cache = NULL;
 #endif
 
-	//pthread_rwlock_wrlock(icache_rwlock);
+	pthread_rwlock_wrlock(icache_rwlock);
 
 	HASH_ADD(hash_handle, inode_hash[dev], inum,
 	 		sizeof(uint32_t), inode);
 
-	//pthread_rwlock_unlock(icache_rwlock);
+	pthread_rwlock_unlock(icache_rwlock);
 
 	return inode;
 }
