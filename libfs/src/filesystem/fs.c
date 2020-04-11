@@ -972,11 +972,11 @@ static void evict_read_cache(struct inode *inode, uint32_t n_entries_to_evict)
 		if (_fcache_block->is_data_cached) {
 			mlfs_free(_fcache_block->data);
 
-			//if (!_fcache_block->log_addr) {
+			if (!_fcache_block->log_addr) {
 				list_del(&_fcache_block->l);
 				fcache_del(inode, _fcache_block);
 				mlfs_free(_fcache_block);
-			//}
+			}
 
 			g_fcache_head.n--;
 			i++;
