@@ -152,6 +152,14 @@ int do_migrate_blocks(uint8_t from_dev, uint8_t to_dev, uint32_t file_inum,
 	nr_digested_blocks = 0;
 	cur_offset = offset;
 
+        handle_t handle = {.dev = to_dev};
+        struct mlfs_extent_header *ihdr = ext_inode_hdr(&handle, file_inode);
+
+        // The first creation of dinode of file
+        if (ihdr->eh_magic != MLFS_EXT_MAGIC) {
+                mlfs_ext_tree_init(&handle, file_inode);
+        }
+
 	// multiple trials of block writing.
 	// when extent tree has holes in a certain offset (due to data migration),
 	// an extent is split at the hole. Kernfs should call mlfs_ext_get_blocks()
