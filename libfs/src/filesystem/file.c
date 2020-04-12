@@ -138,7 +138,7 @@ ssize_t mlfs_file_read(struct file *f, uint8_t *buf, size_t n)
 	if (f->type == FD_INODE) {
 		ilock(f->ip);
 
-		if (f->off >= f->ip->size) {
+		if (f->off >= f->ip->size || ((f->off + n) >= f->ip->size)) {
 			iunlock(f->ip);
 			return 0;
 		}
